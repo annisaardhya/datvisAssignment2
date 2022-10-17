@@ -1,0 +1,28 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/annisaardhya/datavisassignment2/main/top%2010%20happiness%20country%20with%20their%20alcohol%20consumption.csv"
+  },
+  "width": "container",
+  "height": "container",
+  "title": "Top 10 Happiness Country with Their Alcohol Consumption",
+  "mark": "bar",
+  "encoding": {
+    "x": {"field": "Area", "type": "ordinal", "title": "Country", "sort": "-y"},
+    "y": {"field": "Yield", "aggregate": "sum", "type": "quantitative"},
+    "color": {
+      "field": "Item",
+      "type": "nominal",
+      "scale": {
+        "domain": ["Spirit", "Beer", "Wine"],
+        "range": ["#808080", "#f28e1c", "#8b171a"]
+      },
+      "title": "item"
+    },
+    "tooltip": [
+      {"field": "Item", "type": "nominal"},
+      {"field": "Yield", "type": "quantitative"}
+    ]
+  },
+  "config": {}
+}

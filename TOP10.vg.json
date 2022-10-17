@@ -1,0 +1,132 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 650,
+  "height": 300,
+  "style": "cell",
+  "data": [
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/annisaardhya/datavisassignment2/main/top%2010%20happiness%20country%20with%20their%20alcohol%20consumption.csv",
+      "format": {"type": "csv", "delimiter": ","}
+    },
+    {
+      "name": "data_0",
+      "source": "source_0",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": ["Area", "Item", "Yield"],
+          "ops": ["sum"],
+          "fields": ["Yield"],
+          "as": ["sum_Yield"]
+        },
+        {
+          "type": "stack",
+          "groupby": ["Area"],
+          "field": "sum_Yield",
+          "sort": {"field": ["Item"], "order": ["descending"]},
+          "as": ["sum_Yield_start", "sum_Yield_end"],
+          "offset": "zero"
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"sum_Yield\"]) && isFinite(+datum[\"sum_Yield\"])"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "rect",
+      "style": ["bar"],
+      "from": {"data": "data_0"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "Item"},
+          "tooltip": {
+            "signal": "{\"Item\": isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"], \"Yield\": format(datum[\"Yield\"], \"\")}"
+          },
+          "ariaRoleDescription": {"value": "bar"},
+          "description": {
+            "signal": "\"Country: \" + (isValid(datum[\"Area\"]) ? datum[\"Area\"] : \"\"+datum[\"Area\"]) + \"; Alcohol Consumption PerCapita: \" + (format(datum[\"sum_Yield\"], \"\")) + \"; item: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"]) + \"; Item: \" + (isValid(datum[\"Item\"]) ? datum[\"Item\"] : \"\"+datum[\"Item\"]) + \"; Yield: \" + (format(datum[\"Yield\"], \"\"))"
+          },
+          "x": {"scale": "x", "field": "Area"},
+          "width": {"scale": "x", "band": 1},
+          "y": {"scale": "y", "field": "sum_Yield_end"},
+          "y2": {"scale": "y", "field": "sum_Yield_start"}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "band",
+      "domain": {
+        "data": "source_0",
+        "field": "Area",
+        "sort": {"op": "sum", "field": "Yield", "order": "descending"}
+      },
+      "range": [0, {"signal": "width"}],
+      "paddingInner": 0.1,
+      "paddingOuter": 0.05
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {
+        "data": "data_0",
+        "fields": ["sum_Yield_start", "sum_Yield_end"]
+      },
+      "range": [{"signal": "height"}, 0],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": ["Spirit", "Beer", "Wine"],
+      "range": ["#808080", "#f28e1c", "#8b171a"]
+    }
+  ],
+  "axes": [
+    {
+      "scale": "y",
+      "orient": "left",
+      "gridScale": "x",
+      "grid": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Country",
+      "labelAlign": "right",
+      "labelAngle": 270,
+      "labelBaseline": "middle",
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Alcohol Consumption PerCapita",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "zindex": 0
+    }
+  ],
+  "legends": [{"title": "item", "fill": "color", "symbolType": "square"}],
+  "config": {}
+}

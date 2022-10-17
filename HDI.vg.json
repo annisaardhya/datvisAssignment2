@@ -1,0 +1,200 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 400,
+  "height": 400,
+  "style": "cell",
+  "data": [
+    {"name": "org_store"},
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/annisaardhya/datavisassignment2/main/HappinessAlcoholConsumptionNew.csv",
+      "format": {"type": "csv", "delimiter": ","},
+      "transform": [
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"HappinessScore\"]) && isFinite(+datum[\"HappinessScore\"]) && isValid(datum[\"HDI\"]) && isFinite(+datum[\"HDI\"])"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "unit",
+      "value": {},
+      "on": [
+        {"events": "mousemove", "update": "isTuple(group()) ? group() : unit"}
+      ]
+    },
+    {
+      "name": "org_Region",
+      "value": null,
+      "bind": {
+        "input": "select",
+        "options": [
+          null,
+          "Australia and New Zealand",
+          "Central and Eastern Europe",
+          "Eastern Asia",
+          "Latin America and Caribbean",
+          "Middle East and Northern Africa",
+          "Southeastern Asia",
+          "Sub-Saharan Africa",
+          "Western Europe"
+        ],
+        "labels": [
+          "All",
+          "Australia and New Zealand",
+          "Central and Eastern Europe",
+          "Eastern Asia",
+          "Latin America and Caribbean",
+          "Middle East and Northern Africa",
+          "Southeastern Asia",
+          "Sub-Saharan Africa",
+          "Western Europe"
+        ],
+        "name": "Region"
+      }
+    },
+    {
+      "name": "org",
+      "update": "vlSelectionResolve(\"org_store\", \"union\", true, true)"
+    },
+    {
+      "name": "org_tuple",
+      "update": "org_Region !== null ? {fields: org_tuple_fields, values: [org_Region]} : null"
+    },
+    {"name": "org_tuple_fields", "value": [{"type": "E", "field": "Region"}]},
+    {
+      "name": "org_modify",
+      "on": [
+        {
+          "events": {"signal": "org_tuple"},
+          "update": "modify(\"org_store\", org_tuple, true)"
+        }
+      ]
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "symbol",
+      "style": ["point"],
+      "interactive": true,
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "opacity": {"value": 0.7},
+          "tooltip": {
+            "signal": "{\"Country\": isValid(datum[\"Country\"]) ? datum[\"Country\"] : \"\"+datum[\"Country\"], \"Region\": isValid(datum[\"Region\"]) ? datum[\"Region\"] : \"\"+datum[\"Region\"], \"Happiness Score\": format(datum[\"HappinessScore\"], \"\"), \"Human Development Index\": format(datum[\"HDI\"], \"\")}"
+          },
+          "fill": {"value": "transparent"},
+          "stroke": [
+            {
+              "test": "!length(data(\"org_store\")) || vlSelectionTest(\"org_store\", datum)",
+              "scale": "color",
+              "field": "Region"
+            },
+            {"value": "grey"}
+          ],
+          "ariaRoleDescription": {"value": "point"},
+          "description": {
+            "signal": "\"Happiness Score: \" + (format(datum[\"HappinessScore\"], \"\")) + \"; Human Development Index: \" + (format(datum[\"HDI\"], \"\")) + \"; Region: \" + (isValid(datum[\"Region\"]) ? datum[\"Region\"] : \"\"+datum[\"Region\"]) + \"; Country: \" + (isValid(datum[\"Country\"]) ? datum[\"Country\"] : \"\"+datum[\"Country\"])"
+          },
+          "x": {"scale": "x", "field": "HappinessScore"},
+          "y": {"scale": "y", "field": "HDI"}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "x",
+      "type": "linear",
+      "domain": {"data": "source_0", "field": "HappinessScore"},
+      "range": [0, {"signal": "width"}],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "y",
+      "type": "linear",
+      "domain": {"data": "source_0", "field": "HDI"},
+      "range": [{"signal": "height"}, 0],
+      "nice": true,
+      "zero": true
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {"data": "source_0", "field": "Region", "sort": true},
+      "range": "category"
+    }
+  ],
+  "axes": [
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "gridScale": "y",
+      "grid": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "gridScale": "x",
+      "grid": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "domain": false,
+      "labels": false,
+      "aria": false,
+      "maxExtent": 0,
+      "minExtent": 0,
+      "ticks": false,
+      "zindex": 0
+    },
+    {
+      "scale": "x",
+      "orient": "bottom",
+      "grid": false,
+      "title": "Happiness Score",
+      "labelFlush": true,
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(width/40)"},
+      "zindex": 0
+    },
+    {
+      "scale": "y",
+      "orient": "left",
+      "grid": false,
+      "title": "Human Development Index",
+      "labelOverlap": true,
+      "tickCount": {"signal": "ceil(height/40)"},
+      "zindex": 0
+    }
+  ],
+  "legends": [
+    {
+      "stroke": "color",
+      "symbolType": "circle",
+      "title": "Region",
+      "encode": {
+        "symbols": {
+          "update": {
+            "fill": {"value": "transparent"},
+            "opacity": {"value": 0.7}
+          }
+        }
+      }
+    }
+  ],
+  "config": {}
+}

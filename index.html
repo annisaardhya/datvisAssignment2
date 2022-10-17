@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>'
+    <link href="style.css" rel="stylesheet" type="text/css">
+
+    <script src="myscript.js"></script>
+
+</head>
+<body>
+<div class="background">
+    
+        <div class="page"></div>
+            <h1> Is it true that drinking alcohol and happiness levels are linked in every country in the world?</h1>
+            <div class="smallertext">
+                Do you know that happiness can be measured and each country is ranked each year based on its happiness index? 
+                On a scale of 0 to 10, this index evaluates the level of happiness in various nations. Some people believe 
+                that alcohol consumption can increase happiness. So is it true?
+            </div>
+      
+        
+            <H2>World Happiness Rate in 2016 </H2>
+            <div id="map1"></div>
+            <div class="smallertext">
+                Every year, the World Happiness Index polls a large number of people from various countries around the world to determine which country has the happiest people. 
+                Denmark is this year's winner.
+            </div>
+
+
+            <H2> Top 10 Happiness Country with their Alcohol Consumption </H2>
+            <div id="barchart"></div>
+            <div class="smallertext">
+                Surprisingly, Denmark, which is the happiest country, has a high consumption rate of about 583 liters per person.
+            </div>
+
+
+            <H2>Does the happiness score in every country come with alcohol consumption?</H2> 
+            <div id="scattered_plot1"></div>
+            <div class="smallertext">
+                To conclude, the happiness score in several countries, especially in Western Europe, is directly proportional to the amount of alcohol consumed.
+            </div>
+            <H2> Does the happiness score in every country come with a Human Development Index?</H2>
+            <div id="scattered_plot2"></div>
+            <div class="smallertext">
+                To conclude, the happiness score is linearly proportional to the human development index, with the highest position in the scattered plot being Norway.
+            </div>
+</div>
+</body>
+</html>

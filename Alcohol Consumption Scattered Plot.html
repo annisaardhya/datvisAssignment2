@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>
+</head>
+<body>
+  <div id="vis"/>
+  <script>
+    const spec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/annisaardhya/datavisassignment2/main/HappinessAlcoholConsumptionNew.csv"
+  },
+  "title": "Does happiness score in every country come with alcohol consumption?",
+  "width": 500,
+  "height": 500,
+  "params": [
+    {
+      "name": "org",
+      "select": {"type": "point", "fields": ["Region"]},
+      "bind": {
+        "input": "select",
+        "options": [
+          null,
+          "Australia and New Zealand",
+          "Central and Eastern Europe",
+          "Eastern Asia",
+          "Latin America and Caribbean",
+          "Middle East and Northern Africa",
+          "Southeastern Asia",
+          "Sub-Saharan Africa",
+          "Western Europe"
+        ],
+        "labels": [
+          "All",
+          "Australia and New Zealand",
+          "Central and Eastern Europe",
+          "Eastern Asia",
+          "Latin America and Caribbean",
+          "Middle East and Northern Africa",
+          "Southeastern Asia",
+          "Sub-Saharan Africa",
+          "Western Europe"
+        ],
+        "name": "Region"
+      }
+    }
+  ],
+  "mark": {"type": "point"},
+  "encoding": {
+    "x": {
+      "field": "HappinessScore",
+      "type": "quantitative",
+      "title": "Happiness Score"
+    },
+    "y": {
+      "field": "Alcohol_PerCapita",
+      "type": "quantitative",
+      "title": "Alcohol Percapita"
+    },
+    "color": {
+      "condition": {"param": "org", "field": "Region", "type": "nominal"},
+      "value": "grey"
+    },
+    "tooltip": [
+      {"field": "Country", "type": "nominal"},
+      {"field": "Region", "type": "nominal"},
+      {
+        "field": "HappinessScore",
+        "type": "quantitative",
+        "title": "Happiness Score"
+      },
+      {
+        "field": "Alcohol_PerCapita",
+        "type": "quantitative",
+        "title": "Alcohol Percapita"
+      }
+    ]
+  },
+  "config": {}
+};
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
